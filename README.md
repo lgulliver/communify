@@ -14,7 +14,7 @@ An open source alternative to Meetup, that is free for both organisers and atten
 
 # Technologies
 
-- Most services will likely be written in C#
+- Most services will likely be written in C# and built to be hosted in Azure Functions/other serverless technologies
 
 # Other bits and bobs
 
