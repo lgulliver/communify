@@ -18,4 +18,4 @@ An open source alternative to Meetup, that is free for both organisers and atten
 
 # Other bits and bobs
 
-This project serves as an opportunity to get to grips with serverless architectures, along with technologies such as Blazor.
+This project serves as an opportunity to get to grips with serverless architectures, along with technologies such as Blazor and Github Actions.
