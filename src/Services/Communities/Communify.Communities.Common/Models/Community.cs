@@ -1,10 +1,10 @@
 ﻿using System;
 
-namespace Communify.Communities.Api.Models
+namespace Communify.Communities.Common.Models
 {
     public class Community
     {
-        public Guid Id { get; set; }
+        public Guid GlobalId { get; set; }
         public string Name { get; set; }
         public string Description { get; set; }
     }

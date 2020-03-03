@@ -1,7 +1,8 @@
 ﻿using System;
 using System.Threading.Tasks;
+using Communify.Communities.Common.Models;
 
-namespace Communify.Communities.Api.Models
+namespace Communify.Communities.Common
 {
     public interface ICommunityRepository
     {
