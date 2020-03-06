@@ -24,6 +24,13 @@
     <ProjectReference Include="..\Communify.Communities.ApiFunctions\Communify.Communities.ApiFunctions.csproj" />
     <ProjectReference Include="..\Communify.Communities.Common\Communify.Communities.Common.csproj" />
     <ProjectReference Include="..\Communify.Testing.AzureFunctions\Communify.Testing.AzureFunctions.csproj" />
+    <ProjectReference Include="..\Communify.Testing.Specflow\Communify.Testing.Specflow.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Update="specflow.json">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
   </ItemGroup>
 
 </Project>

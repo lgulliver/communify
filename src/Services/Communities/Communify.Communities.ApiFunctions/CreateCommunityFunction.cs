@@ -26,10 +26,15 @@ namespace Communify.Communities.ApiFunctions
             HttpRequest req,
             ILogger log)
         {
-            var community = await req.GetJsonBody<Community>();
-            await _communityRepository.CreateCommunityAsync(community);
+            var communityValidatedModel = await req.GetJsonBody<Community, CommunityValidator>();
+            if (!communityValidatedModel.IsValid)
+            {
+                return communityValidatedModel.ToBadRequestResult();
+            }
 
-            return new CreatedResult($"{community.GlobalId}", community);
+            await _communityRepository.CreateCommunityAsync(communityValidatedModel.Value);
+
+            return new CreatedResult($"{communityValidatedModel.Value.GlobalId}", communityValidatedModel.Value);
         }
     }
 }

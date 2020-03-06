@@ -24,16 +24,18 @@ namespace Communify.Communities.Testing.Steps
             }
         }
 
-        public async Task CreateCommunity(Community community)
+        public async Task CreateCommunity(TestCommunity community)
         {
             Result =
-                await _functionTestAdapter.ExecuteHttpTrigger<Community, NullPayload>(CreateCommunityFunction.CreateFunctionName, "put", community);
+                    await _functionTestAdapter.ExecuteHttpTrigger<TestCommunity, NullPayload>(CreateCommunityFunction.CreateFunctionName, "put", community);
+
+            
         }
 
-        public async Task<Community> GetCommunityById(Guid globalId)
+        public async Task<Community> GetCommunityById(string globalId)
         {
             var response = await _functionTestAdapter.ExecuteHttpTrigger<NullPayload, Community>(GetCommunityFunction.GetFunctionName, "get", new NullPayload(),
-                new KeyValuePair<string, string>("id", globalId.ToString()));
+                new KeyValuePair<string, string>("id", globalId));
             if (response is HttpResponse<Community> communityResponse)
             {
                 return communityResponse.Body;

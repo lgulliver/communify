@@ -1,10 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net;
 using System.Net.Http;
 using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
+using Communify.Communities.Common;
 using Microsoft.AspNetCore.TestHost;
 using Microsoft.Azure.Functions.Extensions.DependencyInjection;
 using Newtonsoft.Json;
@@ -16,23 +18,31 @@ namespace Communify.Testing.AzureFunctions.Adapters.Development
         private TestServer _functionTestServer;
         private HttpClient _httpClient;
 
-        public async Task<HttpResponse> ExecuteHttpTrigger<TRequestPayload, TResponsePayload>(string functionName, string method, TRequestPayload payload,
+        public async Task<HttpResponse> ExecuteHttpTrigger<TRequestPayload, TResponsePayload>(string functionName, string method, TRequestPayload payload, 
             params KeyValuePair<string, string>[] queryString)
         {
             var response = await ExecuteHttpTriggerFunction(functionName, method, payload, queryString);
 
-            if (response.IsSuccessStatusCode)
+
+            if (response.Content != null)
             {
-                if (response.Content != null)
+                if (response.IsSuccessStatusCode)
                 {
                     var responsePayload = await response.Content.ReadAsAsync<TResponsePayload>();
-                    return new HttpResponse<TResponsePayload>((int)response.StatusCode, response.HeadersAsDictionary(), responsePayload);
+                    return new HttpResponse<TResponsePayload>((int) response.StatusCode,
+                        response.HeadersAsDictionary(), responsePayload);
                 }
 
-                return new HttpResponse((int)response.StatusCode, response.HeadersAsDictionary());
+                if (response.StatusCode == HttpStatusCode.BadRequest)
+                {
+                    var errorPayload = await response.Content.ReadAsAsync<IEnumerable<ValidationError>>();
+                    return new HttpResponse<IEnumerable<ValidationError>>((int) response.StatusCode,
+                        response.HeadersAsDictionary(), errorPayload);
+                }
             }
 
-            throw new HttpException((int)response.StatusCode, response.ReasonPhrase);
+            return new HttpResponse((int)response.StatusCode, response.HeadersAsDictionary());
+       
         }
 
         public void Initialise<TStartup>(Assembly functionAssembly = null) where TStartup : FunctionsStartup, new()

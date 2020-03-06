@@ -7,12 +7,19 @@ using TechTalk.SpecFlow;
 
 namespace Communify.Communities.Testing.Steps
 {
+    public class TestCommunity
+    {
+        public string GlobalId { get; set; }
+        public string Name { get; set; }
+        public string Description { get; set; }
+    }
+
     [Binding]
     public class Steps
     {
         private readonly CommunityTestContext _communityTestContext;
-        private readonly Guid _communityId = Guid.NewGuid();
-        private Community _community;
+        private readonly string _communityId = Guid.NewGuid().ToString();
+        private TestCommunity _community;
 
         public Steps(CommunityTestContext communityTestContext)
         {
@@ -22,7 +29,7 @@ namespace Communify.Communities.Testing.Steps
         [Given(@"a community has formed")]
         public void GivenACommunityHasFormed()
         {
-            _community = new Community
+            _community = new TestCommunity
             {
                 GlobalId = _communityId,
                 Description = $"Description of {_communityId}",
@@ -51,6 +58,28 @@ namespace Communify.Communities.Testing.Steps
             Assert.AreEqual(_community.Name, community.Name);
         }
 
+        [Given(@"the community is called (.*)")]
+        public void GivenTheCommunityIsCalled(string name)
+        {
+            _community.Name = name;
+        }
 
+        [Given(@"the community is described as (.*)")]
+        public void GivenTheCommunityIsDescribedAs(string description)
+        {
+            _community.Description = description;
+        }
+
+        [Given(@"the community has been given an id of (.*)")]
+        public void GivenTheCommunityHasBeenGivenAnIdOf(string id)
+        {
+            _community.GlobalId = id;
+        }
+
+        [Then(@"the community creation has a result of (.*)")]
+        public void ThenTheCommunityCreationHasAResultOf(HttpStatusCode statusCode)
+        {
+             Assert.AreEqual(statusCode, (HttpStatusCode)_communityTestContext.Result.StatusCode);
+        }
     }
 }

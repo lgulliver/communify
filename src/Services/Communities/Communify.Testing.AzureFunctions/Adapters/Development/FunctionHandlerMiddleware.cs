@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using System.Web.Http;
 using Communify.Testing.AzureFunctions.Metadata;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -63,20 +64,30 @@ namespace Communify.Testing.AzureFunctions.Adapters.Development
                 // TODO: parameter resolution
                 ActionResult actionResult;
                 var function = functionTypeFactory.GetFunction(functionDescriptor);
-                if (functionDescriptor.FunctionMethod.IsAsync())
+                try
                 {
-                    actionResult =
-                        (ActionResult)await functionDescriptor.FunctionMethod.InvokeAsync(function, context.Request, NullLogger.Instance);
+                    if (functionDescriptor.FunctionMethod.IsAsync())
+                    {
+                        actionResult =
+                            (ActionResult)await functionDescriptor.FunctionMethod.InvokeAsync(function, context.Request, NullLogger.Instance);
+                    }
+                    else
+                    {
+                        actionResult =
+                            functionDescriptor.FunctionMethod.Invoke(function, new object[] { context.Request, NullLogger.Instance }) as
+                                ActionResult;
+                        if (actionResult == null)
+                        {
+                            throw new InvalidOperationException("Expected ActionResult from Function Method Invocation");
+                        }
+                    }
+
+                    
                 }
-                else
+                catch (Exception e)
                 {
-                   actionResult =
-                       functionDescriptor.FunctionMethod.Invoke(function, new object[] {context.Request, NullLogger.Instance }) as
-                           ActionResult;
-                   if (actionResult == null)
-                   {
-                       throw new InvalidOperationException("Expected ActionResult from Function Method Invocation");
-                   }
+                    var errorResult = new ObjectResult(e.ToString()) {StatusCode = 500};
+                    actionResult = errorResult;
                 }
 
                 var actionContext = new ActionContext(context, new RouteData(), new ActionDescriptor());

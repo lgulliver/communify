@@ -16,4 +16,8 @@
     <PackageReference Include="Microsoft.Extensions.DependencyInjection.Abstractions" Version="3.1.2" />
   </ItemGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\Communify.Communities.Common\Communify.Communities.Common.csproj" />
+  </ItemGroup>
+
 </Project>
