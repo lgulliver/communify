@@ -1,0 +1,20 @@
+﻿{
+  "bindingCulture": {
+    "language": "en-us"
+  },
+  "language": {
+    "feature": "en-us"
+  },
+  "stepAssemblies": [
+    { "assembly": "Communify.Testing.Specflow" }
+  ],
+  "cucumber-messages": {
+    "enabled": false,
+    "sinks": [
+      {
+        "type": "file",
+        "path": "custom_cucumber_messages_file.cm"
+      }
+    ]
+  }
+}
